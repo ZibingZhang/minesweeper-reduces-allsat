@@ -37,13 +37,19 @@ The player must methodically click on raised tiles to clear them.
 
 The game is over once all tiles that do not contain bombs have been cleared, or once the player clears a tile that contains a bomb.
 
-# What is the Boolean satisfiability problem (SAT)?
+# What is the Boolean Satisfiability Problem (SAT)?
 
 For any Boolean formula, the Boolean satisfiability problem is the problem of determining if there exists an assignment of the Boolean variables such that the formula evaluates to TRUE.
 SAT is famously known to be NP-complete.
 
 Developing state-of-the-art SAT solvers is an active area of research.
 Most modern solvers rely on assortment of techniques such as conflict-driven-clause-learning and the Davis-Putnam algorithm.
+
+## What is the All-Solution Boolean Satisfiability Problem (ALLSAT)?
+
+To solve SAT, we only care about the existence of _a_ solution to the boolean expression.
+In other cases, we care about all possible solutions.
+ALLSAT solvers determine if the provided boolean expression is solvable, and if so, provides _all_ solutions to the expression.
 
 # Minesweeper Strategies
 
@@ -104,6 +110,18 @@ Combining the three boolean expressions for the middle three cells, we have the 
 Running the expression through a SAT-solver, we can see that $x_2$ and $x_4$ being assigned TRUE with everything else assigned FALSE is a satisfying assignment.
 
 TODO: talk about ALLSAT, how multiple solutions creates ambiguity, but how we can use number of solutions as a heuristic as to how to proceed in the game
+
+to elaborate, having multiple solutions indicates some level in ambiguity in the flag placement (unless in each solution the same tile is flagged).
+even if we have a case where in each solution the same tile is flagged, yes we can flag that tile, but that doesn't give us any additional information about the situation, since we could already deduce that that tile must be flagged (if that makes any sense)
+
+we want to first flag all sections where ALLSAT only has one solution (or same flag placement in all solutions), then run "obvious" strategies, then repeat.
+
+only in the case where we can go no futher, should we then start guessing using the ALLSAT solutions as a heuristic as to where to (guess) place flags
+it's pretty straightforward to prove that for some subset of games, we must eventually resolve to guessing to finish out the game (simple to construct a 50/50 scenario for the endgame)
+
+thus concludes our reduction, which is only the decision of making a move in a non-obvious scenario in minesweeper to solving ALLSAT
+it's important to realize that the "obvious" scenarios could also be "solved" using ALLSAT, but to do so is definitely overkill
+
 
 # Further Readings
 
